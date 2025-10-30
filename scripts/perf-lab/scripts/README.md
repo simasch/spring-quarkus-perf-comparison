@@ -1,7 +1,7 @@
 time.js
 =======
 
-Node.js script to measure the start time of an application without having to modicfy application code.
+Node.js script to measure the start time of an application without having to modify application code.
 
 The application is spawned in a background process and a URL is tested until a HTTP 200 response is returned. The time taken to spawn the process and a HTTP 200 reponse is measured and reported to the terminal.
 

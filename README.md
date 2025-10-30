@@ -11,7 +11,7 @@ This project contains the following modules:
  
 ## Building
 
-`./mvnw clean verify -Dquarkus.hibernate-orm.sql-load-script=import.sql`
+`./mvnw clean verify`
 
 ## Application requirements/dependencies
              

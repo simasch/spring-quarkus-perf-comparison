@@ -1,26 +1,25 @@
-package org.acme.rest;
+package org.acme.e2e;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import jakarta.ws.rs.core.Response.Status;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import java.math.BigDecimal;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 
-import java.math.BigDecimal;
-
-import jakarta.ws.rs.core.Response.Status;
-
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-
-import io.quarkus.test.junit.QuarkusIntegrationTest;
-
-import io.restassured.http.ContentType;
-
-@QuarkusIntegrationTest
+// Note: There isn't an equivalent of this test in the Spring projects. It tests the entire application, without mocking.
+// The tests run in test mode, in the same process as the application under test.
+@QuarkusTest
 @TestMethodOrder(OrderAnnotation.class)
-public class FruitControllerIT {
+public class FruitControllerEndToEndTest {
 	private static final int DEFAULT_ORDER = 1;
 
 	@Test
@@ -100,14 +99,14 @@ public class FruitControllerIT {
 
 		given()
 			.contentType(ContentType.JSON)
-			.body("{\"name\":\"Grapefruit\",\"description\":\"Summer fruit\"}")
+			.body("{\"name\":\"Lemon\",\"description\":\"Acidic fruit\"}")
 			.when().post("/fruits")
 			.then()
 			.contentType(ContentType.JSON)
 			.statusCode(Status.OK.getStatusCode())
 			.body("id", greaterThanOrEqualTo(3))
-			.body("name", is("Grapefruit"))
-			.body("description", is("Summer fruit"));
+			.body("name", is("Lemon"))
+			.body("description", is("Acidic fruit"));
 
 		get("/fruits").then()
 			.body("$.size()", is(3));
