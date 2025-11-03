@@ -10,5 +10,5 @@ set -euo pipefail
 ${thisdir}/infra.sh -s
 java -XX:ActiveProcessorCount=8 -Xms512m -Xmx512m -jar $1 &
 jbang wrk@hyperfoil -t2 -c100 -d20s --timeout 1s http://localhost:8080/fruits
-scripts/infra.sh -d
+${thisdir}/infra.sh -d
 kill $(lsof -t -i:8080) &>/dev/null
