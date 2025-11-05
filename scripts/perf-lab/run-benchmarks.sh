@@ -94,6 +94,8 @@ validate_values() {
 }
 
 print_values() {
+  echo
+  echo "#####################"
   echo "Configuration Values:"
   echo "  CGROUPS_CPUS: $CGROUPS_CPUS"
   echo "  GRAALVM_VERSION: $GRAALVM_VERSION"
@@ -118,6 +120,7 @@ print_values() {
   echo "  JVM_ARGS: $JVM_ARGS"
   echo "  EXTRA_QDUP_ARGS: $EXTRA_QDUP_ARGS"
   echo "  OUTPUT_DIR: $OUTPUT_DIR"
+  echo
 }
 
 make_json_array() {
@@ -140,7 +143,6 @@ setup_jbang() {
     fi
     
     JBANG_CMD="./.jbang-wrapper"
-    echo "Using jbang wrapper"
   fi
 }
 
@@ -319,4 +321,4 @@ done
 validate_values
 print_values
 setup_jbang
-# run_benchmarks
+run_benchmarks
