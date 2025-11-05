@@ -160,7 +160,6 @@ run_benchmarks() {
 
 #  jbang qDup@hyperfoil --trace="target" \
 ${JBANG_CMD} qDup@hyperfoil \
-    -C \
     -B ${OUTPUT_DIR} \
     -ix \
     ${EXTRA_QDUP_ARGS} \
