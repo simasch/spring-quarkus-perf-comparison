@@ -3,13 +3,8 @@ LABEL org.opencontainers.image.source="https://github.com/quarkusio/spring-quark
 
 USER root
 
-# Install homebrew requirements
-# RUN dnf group install -y 'Development Tools'
-#RUN dnf group install -y development-tools
-
 # Install system dependencies
 RUN dnf install -y --allowerasing gcc zlib-devel git procps-ng curl file bash unzip zip sudo
-#RUN sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
 
 # Install homebrew
 RUN curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
@@ -25,8 +20,8 @@ WORKDIR /home/benchmark
 
 # Install nvm
 RUN touch ~/.bashrc && chmod +x ~/.bashrc
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-RUN . ~/.nvm/nvm.sh && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
+    . ~/.nvm/nvm.sh && \
     nvm install --lts && \
     nvm use --lts
 
@@ -42,6 +37,7 @@ ENV HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew \
 		HOMEBREW_CELLAR=/home/linuxbrew/.linuxbrew/Cellar \
 		HOMEBREW_REPOSITORY=/home/linuxbrew/.linuxbrew/Homebrew \
 		PATH=/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}
+
 RUN	echo "eval \$(${HOMEBREW_PREFIX}/bin/brew shellenv)" >> ~/.bashrc
 
 # Keep container running and wait for connections
