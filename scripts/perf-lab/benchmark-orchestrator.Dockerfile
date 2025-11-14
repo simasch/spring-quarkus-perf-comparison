@@ -20,8 +20,8 @@ WORKDIR /home/benchmark
 
 # Install nvm
 RUN touch ~/.bashrc && chmod +x ~/.bashrc
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
-    . ~/.nvm/nvm.sh && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+RUN . ~/.nvm/nvm.sh && \
     nvm install --lts && \
     nvm use --lts
 
