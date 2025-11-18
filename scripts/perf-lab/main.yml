@@ -231,7 +231,8 @@ scripts:
                 var-name: RUN.output.results.${{RUNTIME.name}}.build.avNativeRSS
                 array: RUN.output.results.${{RUNTIME.name}}.build.native.rss
 
-            # Capture the binary size (should be the same in all files, so just pick the 1st)
+            # The following metrics should be the same in all test iterations, so just pick the 1st
+            # Capture the binary size
             - sh: "sed -n 's/^[[:space:]]*\\([0-9.]*\\)MB in total image size.*/\\1/p' ${{REPO_DIR}}/logs/build-times-${{RUNTIME.name}}-0.log"
             - set-state: RUN.output.results.${{RUNTIME.name}}.build.native.binarySize
 
