@@ -1,7 +1,6 @@
 package org.acme.domain;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -16,6 +15,10 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "store_fruit_prices")
@@ -25,8 +28,10 @@ public class StoreFruitPrice {
   private StoreFruitPriceId id;
 
   @MapsId("storeId")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "store_id", nullable = false)
+  @Fetch(FetchMode.SELECT)
+  @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
   private Store store;
 
   @MapsId("fruitId")
@@ -70,14 +75,4 @@ public class StoreFruitPrice {
   public BigDecimal getPrice() { return price; }
   public void setPrice(BigDecimal price) { this.price = price; }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof StoreFruitPrice that)) return false;
-    return Objects.equals(id, that.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(id);
-  }
 }

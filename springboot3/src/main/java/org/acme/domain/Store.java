@@ -1,8 +1,8 @@
 package org.acme.domain;
 
-import java.util.Objects;
 import java.util.StringJoiner;
 
+import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -17,6 +17,7 @@ import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "stores")
+@Cacheable
 public class Store {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stores_seq")
@@ -71,16 +72,4 @@ public class Store {
         .toString();
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Store store = (Store) o;
-    return Objects.equals(id, store.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
 }
