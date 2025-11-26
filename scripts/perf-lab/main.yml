@@ -194,6 +194,7 @@ scripts:
     - set-state: TYPE ${{RUNTIME.type}}
     - for-each: ITERATION ${{=[...Array(${{config.num_iterations}}).keys()]}}
       then:
+        - queue-download: ${{REPO_DIR}}/logs/build-times-${{RUNTIME.name}}-${{ITERATION}}.log
         - script: sync-drop-fs-cache
         - sh: /usr/bin/time -p ${{RUNTIME.buildCmd}} 2>&1 >${{REPO_DIR}}/logs/build-times-${{RUNTIME.name}}-${{ITERATION}}.log | grep real | awk '{print $2}'
         - set-state: BUILD_TIME
@@ -264,13 +265,19 @@ scripts:
     - sh: ${{RUNTIME.buildCmd}}
     - for-each: ITERATION ${{=[...Array(${{config.num_iterations}}).keys()]}}
       then:
+        - queue-download: ${{REPO_DIR}}/logs/measure-time-to-first-request-${{RUNTIME.name}}-${{ITERATION}}.log
         - script: start-test-services
         - script: sync-drop-fs-cache
         - sh: ${{RUNTIME.runCmd}} &>${{REPO_DIR}}/logs/measure-time-to-first-request-${{RUNTIME.name}}-${{ITERATION}}.log &
         - sh: APP_PID=$!
-        - sh: timeout 60s taskset --cpu-list ${{config.resources.cpu.1st_request}} ${{HELPER_SCRIPTS_DIR}}/time-to-1st-request.sh ${{TARGET_URL}} | awk '{print $1}'
+        - sh: timeout 60s bash -c "taskset --cpu-list ${{config.resources.cpu.1st_request}} ${{HELPER_SCRIPTS_DIR}}/time-to-1st-request.sh ${{TARGET_URL}} | awk '{print $1}'"
           then:
-            - set-state: START_TIME
+            - regex: Terminated
+              then:
+                - sh: kill -15 $APP_PID
+                - abort: Run ${{RUNTIME.runCmd}} didn't start within allotted timeout
+              else:
+                - set-state: START_TIME
         - sh: kill -15 $APP_PID
         - script: state-array-push
           with:
@@ -290,6 +297,7 @@ scripts:
     - sh: ${{RUNTIME.buildCmd}}
     - for-each: ITERATION ${{=[...Array(${{config.num_iterations}}).keys()]}}
       then:
+        - queue-download: ${{REPO_DIR}}/logs/measure-rss-${{RUNTIME.name}}-${{ITERATION}}.log
         - script: start-test-services
         - script: sync-drop-fs-cache
         - sh: ${{RUNTIME.runCmd}} 2>&1 >${{REPO_DIR}}/logs/measure-rss-${{RUNTIME.name}}-${{ITERATION}}.log &
@@ -328,6 +336,9 @@ scripts:
     - sh: ${{RUNTIME.buildCmd}}
     - for-each: ITERATION ${{=[...Array(${{config.num_iterations}}).keys()]}}
       then:
+        - queue-download: ${{REPO_DIR}}/logs/wrk-warmup-${{RUNTIME.name}}-${{ITERATION}}.log
+        - queue-download: ${{REPO_DIR}}/logs/load-test-${{RUNTIME.name}}-${{ITERATION}}.log
+        - queue-download: ${{REPO_DIR}}/logs/wrk-${{RUNTIME.name}}-${{ITERATION}}.log
         - script: start-test-services
         - script: sync-drop-fs-cache
         - set-signal: LOAD_STEADY_STATE_START 1
@@ -438,7 +449,7 @@ scripts:
         then:
         - abort: Could not output metrics. Permission denied!
     - queue-download: ${{METRICS_DIR}}/metrics.json
-    - queue-download: ${{REPO_DIR}}/logs/*
+#    - queue-download: ${{REPO_DIR}}/logs/*
 
 hosts:
   target-host: ${{env.run.host.target}}
