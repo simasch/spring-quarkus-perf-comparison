@@ -17,7 +17,6 @@ import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "stores")
-@Cacheable
 public class Store {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stores_seq")

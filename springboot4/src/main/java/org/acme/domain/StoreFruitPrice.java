@@ -1,24 +1,14 @@
 package org.acme.domain;
 
-import java.math.BigDecimal;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "store_fruit_prices")
@@ -31,7 +21,6 @@ public class StoreFruitPrice {
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "store_id", nullable = false)
   @Fetch(FetchMode.SELECT)
-  @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
   private Store store;
 
   @MapsId("fruitId")
